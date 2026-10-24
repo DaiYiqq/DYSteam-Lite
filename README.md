@@ -137,6 +137,11 @@ tools/build_local.sh
 - **Windows**：运行 `tools/run_windows.ps1`（可选 `-Serial <adb-serial>`）。
 - **单元测试**：`./gradlew -PskipRust=true :app:testDebugUnitTest`（无需准备原生库）。
 
+### CI / 自动构建与发布
+
+- **`ci.yml`**：每次 push 到 `main` 或提交 Pull Request 时，自动运行单元测试（无需原生库，用于快速校验）。
+- **`release.yml`**：推送 `v*` 标签（如 `git tag v1.0.0 && git push origin v1.0.0`）或在 Actions 页面手动触发，执行完整原生构建，并自动创建 GitHub Release、附带 APK。
+
 ---
 
 ## 二次开发 / 升级说明
