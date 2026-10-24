@@ -25,9 +25,9 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -44,7 +44,7 @@ jobs:
           "$SDKMANAGER" "ndk;27.3.13750724" "platforms;android-34" "build-tools;34.0.0"
           echo "sdk.dir=${ANDROID_HOME}" >> local.properties
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
 
       # Unit tests (Robolectric) need no native preparation, per docs/BUILDING.md.
       # -PskipPacks=true skips the CI-only add-on pack check (packs are only needed to assemble the APK).
@@ -53,7 +53,7 @@ jobs:
 
       - name: Upload test report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: unit-test-results
           path: |
