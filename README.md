@@ -15,7 +15,7 @@
 
 <p align="center"><em>Bring the SteamOS experience to Android: Valve's Steam client in Big Picture on your Adreno handheld, with Windows games through Valve's ARM64 Proton.</em></p>
 
-> **说明 / Disclaimer**：本项目是基于开源项目 [DroidDeck](https://github.com/Droid-Deck/DroidDeck)（GPL-3.0）的**复刻与增强版**，由二次开发者 **戴亿（Dai Yi）** 重新整理、汉化并升级。为兼容 15+ 个原生 JNI 符号，应用内部包名 / 命名空间仍保留为 `com.droiddeck.launcher`，这是**刻意为之**，并非遗漏。软件对外显示名称统一为 **DYSteam Lite**。
+> **说明 / Disclaimer**：本项目是基于开源项目 [DroidDeck](https://github.com/Droid-Deck/DroidDeck)（GPL-3.0）的**复刻与增强版**，由二次开发者 **戴亿（Dai Yi）和邓宇（DengYu）** 重新整理、汉化并升级。为兼容 15+ 个原生 JNI 符号，应用内部包名 / 命名空间仍保留为 `com.droiddeck.launcher`，这是**刻意为之**，并非遗漏。软件对外显示名称统一为 **DYSteam Lite**。
 
 ---
 
