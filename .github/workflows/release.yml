@@ -82,6 +82,7 @@ jobs:
           echo "Re-signed with release key (alias: ${RELEASE_KEY_ALIAS})."
 
       - name: Publish GitHub Release
+        if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v3
         with:
           files: app/build/outputs/apk/release/app-release.apk
