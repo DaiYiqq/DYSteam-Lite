@@ -141,6 +141,7 @@ tools/build_local.sh
 
 - **`ci.yml`**：每次 push 到 `main` 或提交 Pull Request 时，自动运行单元测试（无需原生库，用于快速校验）。
 - **`release.yml`**：推送 `v*` 标签（如 `git tag v1.0.0 && git push origin v1.0.0`）或在 Actions 页面手动触发，执行完整原生构建，并自动创建 GitHub Release、附带 APK。
+- **发布签名**：默认用 AOSP testkey 签名（仅侧载）；配置仓库 Secret 后自动改用自有密钥签名，详见 [docs/SIGNING.md](docs/SIGNING.md)。
 
 ---
 

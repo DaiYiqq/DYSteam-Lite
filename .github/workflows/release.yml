@@ -48,6 +48,28 @@ jobs:
       - name: Build APK (full native build)
         run: bash tools/build_local.sh
 
+      - name: Sign with release key (optional)
+        env:
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.DYSTEAM_RELEASE_KEYSTORE_BASE64 }}
+          RELEASE_STORE_PASSWORD: ${{ secrets.DYSTEAM_RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.DYSTEAM_RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.DYSTEAM_RELEASE_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          APK=app/build/outputs/apk/release/app-release.apk
+          if [ -z "${RELEASE_KEYSTORE_BASE64:-}" ]; then
+            echo "No release keystore secret set; keeping the AOSP testkey signature."
+            exit 0
+          fi
+          ANDROID_HOME="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "${RELEASE_KEYSTORE_BASE64}" | base64 -d > "$RUNNER_TEMP/release.keystore"
+          BUILD_TOOLS=$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)
+          "$BUILD_TOOLS/zipalign" -p -f 4 "$APK" "$APK.aligned"
+          "$BUILD_TOOLS/apksigner" sign --ks "$RUNNER_TEMP/release.keystore" --ks-pass "pass:${RELEASE_STORE_PASSWORD}" --ks-key-alias "${RELEASE_KEY_ALIAS}" --key-pass "pass:${RELEASE_KEY_PASSWORD}" --v1-signing-enabled true --v2-signing-enabled true --v3-signing-enabled true --out "$APK" "$APK.aligned"
+          rm -f "$APK.aligned" "$APK.idsig"
+          "$BUILD_TOOLS/apksigner" verify --min-sdk-version 26 "$APK" > /dev/null
+          echo "Re-signed with release key (alias: ${RELEASE_KEY_ALIAS})."
+
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
