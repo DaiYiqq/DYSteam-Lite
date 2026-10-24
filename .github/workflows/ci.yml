@@ -47,11 +47,9 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       # Unit tests (Robolectric) need no native preparation, per docs/BUILDING.md.
-      # Run as a local build so the CI-only add-on pack check does not throw.
+      # -PskipPacks=true skips the CI-only add-on pack check (packs are only needed to assemble the APK).
       - name: Run unit tests
-        env:
-          GITHUB_ACTIONS: "false"
-        run: ./gradlew -PskipRust=true :app:testDebugUnitTest --console=plain
+        run: ./gradlew -PskipRust=true -PskipPacks=true :app:testDebugUnitTest --console=plain
 
       - name: Upload test report
         if: always()

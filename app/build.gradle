@@ -79,6 +79,9 @@ def sourceCommit = providers.environmentVariable('DROIDDECK_SOURCE_COMMIT').getO
     ?: providers.environmentVariable('GITHUB_SHA').getOrNull() ?: gitValue(['rev-parse', 'HEAD']) ?: ''
 def prNumber = (providers.environmentVariable('DROIDDECK_PR_NUMBER').getOrNull() ?: '0').with { it.isInteger() ? it : '0' }
 def ciBuild = providers.environmentVariable('GITHUB_ACTIONS').getOrNull() == 'true'
+// Unit-test-only builds do not need the add-on packs; -PskipPacks=true lets them skip the CI pack check.
+def skipPacks = (project.findProperty('skipPacks')
+    ?: localBuildOptions.getProperty('droiddeck.skipPacks', 'false')).toString().toBoolean()
 def releaseSigner = rootProject.file('keystore/release-signer.sha256').text.trim()
 def commitTime = (gitValue(['show', '-s', '--format=%ct', '--end-of-options', sourceCommit]) ?: '0').with { it.isLong() ? it : '0' }
 def desktopKde = rootProject.file('tools/desktop-kde/release.env').readLines()
@@ -90,7 +93,7 @@ def trackingPack = rootProject.file('tools/packs/tracking/release.env').readLine
 def addonPacks = ['proot', 'directaudio', 'tracking', 'xbox', 'comet'].collectEntries { name ->
     def pack = file("build/packs/${name}.tar.zst")
     if (!pack.isFile()) {
-        if (ciBuild) throw new GradleException("Add-on pack ${pack} is missing: run tools/packs/build.sh app/build/packs")
+        if (ciBuild && !skipPacks) throw new GradleException("Add-on pack ${pack} is missing: run tools/packs/build.sh app/build/packs")
         return [(name): [sha256: '', size: 0L]]
     }
     def digest = java.security.MessageDigest.getInstance('SHA-256')
